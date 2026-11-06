@@ -1,0 +1,13 @@
+# AI Morning Briefing sources: one per line as   Name | URL
+# RSS/Atom feeds work as-is. For GitHub releases write   github:owner/repo
+# Add or remove lines freely. The agent only READS these, it never logs in or posts there.
+
+Hacker News: AI agents | https://hnrss.org/newest?q=AI+agent&points=20
+Hacker News: Claude    | https://hnrss.org/newest?q=Claude&points=20
+Hacker News: OpenAI    | https://hnrss.org/newest?q=OpenAI&points=20
+Hacker News: LLMs      | https://hnrss.org/newest?q=LLM&points=30
+Claude Code releases   | github:anthropics/claude-code
+OpenAI Python SDK      | github:openai/openai-python
+Gemini CLI releases    | github:google-gemini/gemini-cli
+Ollama releases        | github:ollama/ollama
+n8n releases           | github:n8n-io/n8n

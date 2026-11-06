@@ -1,0 +1,25 @@
+name: AI Morning Briefing
+
+on:
+  schedule:
+    - cron: "0 6 * * 1-5"   # 06:00 UTC, Monday to Friday. Change it to your time.
+  workflow_dispatch:         # adds a "Run workflow" button for a test run
+
+permissions:
+  contents: read             # the agent can read this repo, not change it
+  issues: write              # and post the briefing as an issue (GitHub e-mails it to you)
+
+jobs:
+  briefing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Write today's briefing
+        run: python briefing.py
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_MODEL: ${{ vars.CLAUDE_MODEL }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
