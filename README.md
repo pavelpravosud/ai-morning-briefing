@@ -55,9 +55,10 @@ Note: required reviewers work on **public** repositories on every GitHub plan. F
 - Look back further: set a variable `BRIEFING_HOURS` (default 24).
 - Try it locally without a key: `python briefing.py --dry-run`
 
-## Free checklist
+## Free checklists
 
-[Hire your first AI employee: one-page checklist (PDF)](docs/Hire_Your_First_AI_Employee_Checklist.pdf)
+- [Hire your first AI employee: one-page checklist (PDF)](docs/Hire_Your_First_AI_Employee_Checklist.pdf)
+- [The agent permission ladder: one-page checklist (PDF)](docs/Agent_Permission_Ladder_Checklist.pdf)
 
 ## Licence
 
