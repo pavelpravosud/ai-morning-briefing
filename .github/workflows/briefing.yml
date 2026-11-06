@@ -5,21 +5,50 @@ on:
     - cron: "0 6 * * 1-5"   # 06:00 UTC, Monday to Friday. Change it to your time.
   workflow_dispatch:         # adds a "Run workflow" button for a test run
 
-permissions:
-  contents: read             # the agent can read this repo, not change it
-  issues: write              # and post the briefing as an issue (GitHub e-mails it to you)
+permissions: {}              # nothing by default; each job asks only for what it needs
 
 jobs:
-  briefing:
+  draft:                     # Level 1 agent: it reads and drafts. It cannot publish.
+    if: vars.AGENT_ENABLED != 'false'          # kill switch: set AGENT_ENABLED=false
     runs-on: ubuntu-latest
+    permissions:
+      contents: read         # read this repo
+      issues: write          # post the draft as an issue (GitHub e-mails it to you)
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Write today's briefing
+      - name: Draft today's briefing
         run: python briefing.py
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           CLAUDE_MODEL: ${{ vars.CLAUDE_MODEL }}
+          MAX_COST_USD: ${{ vars.MAX_COST_USD }}     # spending cap per run, default 0.05
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: draft
+          path: briefing.md
+
+  publish:                   # the "hands": runs only after you press Approve
+    needs: draft
+    if: vars.AGENT_ENABLED != 'false'
+    runs-on: ubuntu-latest
+    environment: publish     # Settings > Environments > publish > Required reviewers = you
+    permissions:
+      contents: write        # the only job that can write, and only after approval
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: draft
+      - name: Publish the approved briefing
+        run: python publish.py
+      - name: Save it to the repo
+        run: |
+          git config user.name "ai-morning-briefing"
+          git config user.email "actions@users.noreply.github.com"
+          git add briefings/
+          git commit -m "Publish approved AI briefing" || echo "Nothing new"
+          git push

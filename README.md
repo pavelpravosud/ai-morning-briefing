@@ -29,9 +29,25 @@ Want deeper analysis? Add a repository **variable** `CLAUDE_MODEL` = `claude-opu
 
 ## Safety by design
 
-- **Read-only first:** the agent only reads public feeds. Its only write is one issue in your own repo (`permissions: issues: write`, `contents: read`).
+- **Read-only first:** the agent only reads public feeds. The draft job can post one issue; nothing else can write without your approval (see v2 above).
 - **Secrets stay secret:** your key lives in GitHub Secrets, never in the code or the prompt.
 - **Prompt-injection guard:** feed items are passed as data, and `prompt.md` tells Claude to ignore any instructions inside them.
+
+## v2: give it hands, safely (Episode 2)
+
+Version 2 turns the agent into a **Level 1 agent**: it drafts, you approve, and only then does it act.
+Its one action is to publish the approved briefing to `briefings/YYYY-MM-DD.md` in your repo, so you build a public archive.
+
+| Control | How it works here | Where you set it |
+| --- | --- | --- |
+| **Approve button** | The `publish` job waits for you. GitHub e-mails you; you press **Review deployments → Approve** | **Settings → Environments → New environment** `publish` **→ Required reviewers** = you **→ Save protection rules** |
+| **Least privilege** | Nothing is allowed by default. The draft job can only read the repo and post an issue. Only the publish job can write, and only after approval | Already in `.github/workflows/briefing.yml` |
+| **Kill switch** | Stops every job and the script itself | **Settings → Secrets and variables → Actions → Variables →** `AGENT_ENABLED` = `false` (or **Actions → AI Morning Briefing → ... → Disable workflow**) |
+| **Spending cap** | The script estimates the cost before calling Claude and trims or stops if a run would cost more than the cap | Variable `MAX_COST_USD` (default `0.05`). Also set a monthly spend limit in the Anthropic Console |
+
+**Set up v2 in 3 extra minutes:** create the `publish` environment with yourself as required reviewer, run the workflow once, then open the waiting run and press **Approve**.
+
+Note: required reviewers work on **public** repositories on every GitHub plan. For a private copy you need GitHub Pro or Team.
 
 ## Customise
 
