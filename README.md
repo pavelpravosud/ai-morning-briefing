@@ -39,6 +39,10 @@ Want deeper analysis? Add a repository **variable** `CLAUDE_MODEL` = `claude-opu
 - Look back further: set a variable `BRIEFING_HOURS` (default 24).
 - Try it locally without a key: `python briefing.py --dry-run`
 
+## Free checklist
+
+[Hire your first AI employee: one-page checklist (PDF)](docs/Hire_Your_First_AI_Employee_Checklist.pdf)
+
 ## Licence
 
 MIT. Copyright (c) 2026 Pavel Pravosud.
